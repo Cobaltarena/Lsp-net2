@@ -1,6 +1,7 @@
 #+TITLE: LSP or How to unlock builtin IDE features in your favorite text editor
 #+AUTHOR: thomas.crambert
 #+EMAIL: thomas.crambert@epita.fr
+#+OPTIONS: \n:t
 
 * Introduction
 Text editors are often described as lackluster compared to =Integrated development environments= (long for *IDE*)
@@ -22,7 +23,7 @@ Given M different languages (C, C++, Java, Lisp, etc) and N different editors (E
 then there are *M * N* different tools to make every languages available on every editors used by programmers to write code.
 #+CAPTION: The infamous M * N problem (from freeCodeCamp)
 #+NAME: M*N prob
-#+ATTR_HTLM: title="The infamous M * N problem (from freeCodeCamp)"
+#+ATTR_HTLM: :title The infamous M * N problem (from freeCodeCamp)
 #+ATTR_HTML: :style margin-left: auto; margin-right: auto;
 [[./resources/m-n-prob.png]]
 
@@ -56,7 +57,8 @@ Using custom version of the =JSON-RPC= protocol to send the data, the informatio
 to the builtin implementation that can be found in some IDEs.
 #+CAPTION: Explanation on what happens during the exchange between the client and the server (from the official documentation of microsoft)
 #+NAME: Client/Server-JSON-RPC
-#+ATTR_HTML: :style margin-left: auto; margin-right: auto; title="Explanation on what happens during the exchange between the client and the server (from the official documentation of microsoft)"
+#+ATTR_HTML: :style margin-left: auto; margin-right: auto;
+#+ATTR_HTML: :title Explanation on what happens during the exchange between the client and the server (from the official documentation of microsoft)
 [[./resources/language-server-sequence.png]]
 ** The messages exchanged
 Following the specifications of the protocol, the base protocol relies on two headers:
@@ -129,7 +131,7 @@ through the growth of the communities built around them.
 
 #+CAPTION: What the LSP manages to clean (from swyx.io)
 #+NAME: With/Without-LSP
-#+ATTR_HTML: :style margin-left: auto; margin-right: auto; title="What the LSP manages to clean (from swyx.io)" 
+#+ATTR_HTML: :style margin-left: auto; margin-right: auto; :title What the LSP manages to clean (from swyx.io)
 [[./resources/with-without-lsp.png]]
 
 * What it can offer
@@ -149,7 +151,7 @@ can still sometimes be implemented in the language servers even if it is less li
 
 #+CAPTION: Some features offered by the LSP implementation of VSCode (from Sourcegraph)
 #+NAME: lsp-main-features-vs-code
-#+ATTR_HTML: :style margin-left: auto; margin-right: auto; title="Some features offered by the LSP implementation of VSCode (from Sourcegraph)"
+#+ATTR_HTML: :style margin-left: auto; margin-right: auto; :title Some features offered by the LSP implementation of VSCode (from Sourcegraph)
 #+ATTR_HTML: width="600" height="400"
 [[./resources/lsp-main-features.png]]
 ** Write your own language server
