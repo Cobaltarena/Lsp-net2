@@ -3,25 +3,27 @@
 #+EMAIL: thomas.crambert@epita.fr
 
 * Introduction
-Text editors are often described as lackluster compared to =Integrated development environments= (*IDE*)
+Text editors are often described as lackluster compared to =Integrated development environments= (long for *IDE*)
 and their builtin features that can considerably enhanced the productivity when writing code.
 A good example to illustrate this point is the auto-completion which is enabled by default on most IDEs out there.
 Even if some people do not consider this feature as mandatory, it can be a important criteria for the tools one may want to choose to write code.
 However few years ago, Microsoft managed to find a way that can help implementing such feature in your favorite text editor and help it ascend to the level of an IDE.
 Its name is =Language Server Protocol=, also known as *LSP*.
 * Context and background
-** Microsoft and VS Code
+** Microsoft and VSCode
 In 2015, Microsoft announced the development of *Visual Studio Code*, their homemade open sourced text editor oriented on the programming side.
-However, the competition was already important on this market, with the presence of giants such as Emacs, Vim or Atom.
+However, the competition was already important on this market, with the presence of the almighties IDEs and fossils still widely used such as Emacs, Vim or Atom.
 Nonetheless, the team leading the project aimed for high objectives and planned the whole to scale well to make sure it will get an important share of the programmers
 on the long run.
 As such, they encountered multiple problems when concepting builtin features such as the one that is interesting us here, the auto-completion.
 ** The M * N problem
 There was a very annoying problem for companies promoting a new language and the communities built around them.
 Given M different languages (C, C++, Java, Lisp, etc) and N different editors (Emacs, Vim, Atom, etc),
-then there are M * N different tools to make every languages available on every editors used by programmers to write code.
+then there are *M * N* different tools to make every languages available on every editors used by programmers to write code.
 #+CAPTION: The infamous M * N problem (from freeCodeCamp)
 #+NAME: M*N prob
+#+ATTR_HTLM: title="The infamous M * N problem (from freeCodeCamp)"
+#+ATTR_HTML: :style margin-left: auto; margin-right: auto;
 [[./resources/m-n-prob.png]]
 
 As you can imagine, it can be very costly and very hard to develop even a naive solution of one language for only one editor.
@@ -54,12 +56,12 @@ Using custom version of the =JSON-RPC= protocol to send the data, the informatio
 to the builtin implementation that can be found in some IDEs.
 #+CAPTION: Explanation on what happens during the exchange between the client and the server (from the official documentation of microsoft)
 #+NAME: Client/Server-JSON-RPC
-#+ATTR_HTML: :style margin-left: auto; margin-right: auto;
+#+ATTR_HTML: :style margin-left: auto; margin-right: auto; title="Explanation on what happens during the exchange between the client and the server (from the official documentation of microsoft)"
 [[./resources/language-server-sequence.png]]
 ** The messages exchanged
 Following the specifications of the protocol, the base protocol relies on two headers:
-- Content-Length: the length of the content part in bytes.
-- Content-Type: the type of the content in the body. This header is optional and by default set to 'application/vscode-jsonrpc; charset=utf-8'
+- =Content-Length=: the length of the content part in bytes.
+- =Content-Type=: the type of the content in the body. This header is optional and by default set to 'application/vscode-jsonrpc; charset=utf-8'
 The body of the request is a JSON file that contains the informations required by the server.
 The following request is a generic example that asks to the server to apply the "completion" feature:
 #+begin_src json
@@ -67,10 +69,10 @@ The following request is a generic example that asks to the server to apply the 
   Content-Length: 83
 
   {
-  "jsonrpc" : "2.0",
-  "method": "completion",
-  "params": { "file": foo.txt, "line": 10, "begin": 6, "end": 8},
-  "id": 1
+      "jsonrpc" : "2.0",
+      "method": "completion",
+      "params": { "file": "foo.txt", "line": 10, "begin": 6, "end": 8},
+      "id": 1
   }
 
 
@@ -85,17 +87,18 @@ If the prefix were to be "is", The answer from the server could be:
 
   {
   "jsonrpc": "2.0",
-  "result": {[
-  {
-  "value": "isBoolean",
-  "type": "variable"
-  },
-  {
-  "value": "isDigit",
-  "type": "function"
-  }
-  ]},
-  "id": 1
+  "result": {
+      "completions":[
+          {
+              "value": "isBoolean",
+              "type": "variable"
+          },
+          {
+              "value": "isDigit",
+              "type": "function"
+          }
+      ]},
+      "id": 1
   }
 
 
@@ -116,7 +119,7 @@ Moreover, there's no need to stick anymore to PyChar for developping python and 
 it has an integration with LSP.
 
 There are still some downsides with this solution. The main one is that there will always be the same number of servers running in background
-as they are languages using LSP. In a same way, a server is bound to a tool which means that if a programmer is using both Emacs and VS Code to write some
+as they are languages using LSP. In a same way, a server is bound to a tool which means that if a programmer is using both Emacs and VSCode to write some
 C++ code, then this person will need to run two LSP servers for C++ *at the same time*. This last con also means that it is not possible for now
 to use the LSP for tools integrated in the cloud. Finally, some editors do not support multiple servers for the same language. This can be troublesome since
 a custom implementation would not be able to be used at the same time at the major one.
@@ -126,33 +129,34 @@ through the growth of the communities built around them.
 
 #+CAPTION: What the LSP manages to clean (from swyx.io)
 #+NAME: With/Without-LSP
-#+ATTR_HTML: :style margin-left: auto; margin-right: auto;
+#+ATTR_HTML: :style margin-left: auto; margin-right: auto; title="What the LSP manages to clean (from swyx.io)" 
 [[./resources/with-without-lsp.png]]
 
 * What it can offer
 ** Main features
 What's amazing with the LSP is that it has many possible use cases other than code completion.
 Among the listed implementations on the official website, most of them have five main uses of the LSP:
-- Hovering: complementary information such as documentation, uses or signature function appearing when placing the cursor on a given word,
-- Goto definitions: find the definitions of a symbol, for example a variable, a function or a class,
-- Workspace Symbols: offers a list of all the matches within the workspace of a given query string.
-- Find references: search in the workspace for all the uses of a given symbol.
-- Diagnostics: the backend language server handles diagnostics on either a whole project or a specific file.
+- =Hovering=: complementary information such as documentation, uses or signature function appearing when placing the cursor on a given word,
+- =Goto definitions=: find the definitions of a symbol, for example a variable, a function or a class,
+- =Workspace Symbols=: offers a list of all the matches within the workspace of a given query string.
+- =Find references=: search in the workspace for all the uses of a given symbol.
+- =Diagnostics=: the backend language server handles diagnostics on either a whole project or a specific file.
   A diagnostic can be for example checking that no variable is written in uppercase. As a result, this feature can be a good support
   on developping tools for spell checking or coding style reports.
 
 The above features are not the only ones described in the specifications. More advanced ones code lens (somewhat hidden source code) or renaming functions,
 can still sometimes be implemented in the language servers even if it is less likely.
 
-#+CAPTION: Some features offered by the LSP implementation of VS Code (from Sourcegraph)
+#+CAPTION: Some features offered by the LSP implementation of VSCode (from Sourcegraph)
 #+NAME: lsp-main-features-vs-code
-#+ATTR_HTML: :style margin-left: auto; margin-right: auto;
+#+ATTR_HTML: :style margin-left: auto; margin-right: auto; title="Some features offered by the LSP implementation of VSCode (from Sourcegraph)"
+#+ATTR_HTML: width="600" height="400"
 [[./resources/lsp-main-features.png]]
 ** Write your own language server
 Since the LSP is very easy to work with, writing your own language server with customized validations is also.
-There are many APIs available to getting started with the language of your choice, may it be Python, C#, Java, Lisp and many others.
+There are many APIs available to getting started with the language of your choice, may it be Python, C#, Java, Lisp or many others.
 However, most of the articles I found to write this article were using Typescript because this is both the language used to develop
-VS Code extensions, and the one used in the tutorial proposed by Microsoft.
+VSCode extensions, and the one used in the tutorial proposed by Microsoft.
 If you are interested in trying to write one, I would recommand these readings:
 - [[https://code.visualstudio.com/api/language-extensions/language-server-extension-guide][VSCode official language server extension guide]]: a simple tutorial to write a language server built on a VSCode extension in Typescript.
 - [[https://blog.logrocket.com/how-to-use-the-language-server-protocol-to-extending-a-client-764da0e7863c/][Extending a client with the language server protocol]] by Florian Rappl: a detailed explanation on the calls made on the Typescript API. It is followed with a detailed
