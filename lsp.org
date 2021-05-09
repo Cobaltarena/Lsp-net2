@@ -3,8 +3,11 @@
 # org-html-validation-link: nil
 # End:
 #+OPTIONS: author:nil email:nil creator:nil timestamp:nil
-#+LATEX_HEADER: \usepackage[margin=1.5in]{geometry} \captionsetup{labelformat=empty,labelsep=none}
-
+#+latex_class_options: [11pt, utf8]
+#+LATEX_HEADER: \usepackage[margin=1.2in]{geometry}
+#+begin_export latex
+\newpage
+#+end_export
 * Introduction
 Text editors are often described as lackluster compared to =Integrated development environments= (long for *IDE*)
 and their builtin features that can considerably enhanced the productivity when writing code.
@@ -16,7 +19,6 @@ Its name is =Language Server Protocol=, also known as *LSP*.
 This article aims to give some background knowledge about LSP, what it consists of, its main uses and finally its current place.
 
 * Context and background
-
 ** Microsoft and VS Code
 
 In 2015, Microsoft announced the development of *Visual Studio Code*, their homemade open sourced text editor oriented on the programming side.
@@ -26,7 +28,7 @@ of the programmers on the long run.
 As such, they encountered multiple problems when concepting builtin features such code completion.
 ** The M * N problem
 
-There was a very annoying problem for companies promoting new languages and the communities built around them.
+There was a very annoying problem for companies promoting new languages and communities built around them.
 Given M different languages (C, C++, Java, Lisp, etc) and N different editors (Emacs, Vim, Atom, etc),
 then there are at least *M * N* different tools to make every languages available on every editors used to write code.
 
@@ -43,7 +45,7 @@ in a different place. In fact, the editor does not think anymore, it only edits 
 With the LSP, the infamous M * N problem is solved and only N tools are needed, one for each language.
 Of course, this solution only works if the given editor can offer a client to interact with a server implementing the protocol.
 
-** A story that started with a compiler and finished with a communication protocol
+** A story that started with a compiler and ended with a communication protocol
 
 Microsoft already tried to solve the M * N problem with their C# cross-platform compiler, codenamed *Roslyn*. At the opposite of traditional compilers,
 it was not a black box that would try to isolate itself as much as possible from the developpers and prevent them to modify its inside.
@@ -62,7 +64,6 @@ However, the generic integration was still missing. The Omnisharp project was on
 There was a need to standardized the protocol being used as well as the integration of the server inside the editor, which Microsoft did with the LSP.
 
 * The protocol in itself
-  
 ** Overview
    
 LSP is really simple to understand and requires only some basic knowledge about networking.
@@ -82,14 +83,13 @@ to the builtin implementation that can be found in some IDEs.
 #+ATTR_HTML: :width 100% :height 90%
 [[./resources/language-server-sequence.png]]
 
-As illustrated on the above image, the client sends lots of different notifications about various changes by contacting what could be compared to the endpoints
+As illustrated in =Figure 2=, the client sends lots of different notifications about various changes by contacting what could be compared to the endpoints
 of a REST API. Even if it's a huge shortcut to put it this way, the logic is more or less the same.
-As an example, the client will send a request to contact the method =didChange= each time it will save the file he is editing. That way, the server will be able
+For example in =Figure 2=, the client will send a request to contact the method =didChange= each time it will save the file he is editing. That way, the server will be able
 to update the state of the same file he was watching to make sure he will not publish outdated reports after a request from the client.
 
 For more precisions on the available endpoints, Microsoft offers in [[https://microsoft.github.io/language-server-protocol/specification][its specifications of the protocol]] a list of the classic ones that
 should be present for any implementation of a server supporting the LSP.
-
 
 ** Structure of the messages exchanged during the process
 
@@ -106,7 +106,7 @@ The body of the request is a JSON that contains at least four fields:
 - =id=: an integer representing the id of the request
 - =method=: a string corresponding to the method of the server that has to be invoked. It is similar to the endpoint of a REST API.
 - =params=: either a JSON array or a JSON object that contains the context required by the invoked method
-
+  
 *** The Response
 
 The body of the response is also a JSON that contains at least the same =jsonrpc= and =id= field as in the former request.
@@ -114,7 +114,6 @@ In addition, it also has a field depending if there was an error while processin
 - =result=: present if there was no error, a JSON object in most cases but it can also be a string, a number, a boolean or even null.
 - =error=: a JSON object that contains an error code =code= and a string =message= that provides of a short description of the error. It can also have a =data= field for
   additional information about the error.
-
 
 
 ** A concrete example
@@ -162,7 +161,7 @@ If the prefix were to be ='is'=, an example of an answer from the server could b
 
 After processing the file =foo.txt=, the language server found two possible completions: a *variable* =isBoolean= and a *function* =isDigit=.
 
-If it has no method named =completion=, the backend would have send a similar response but with an error field instead of the =result= one:
+If it has no method named =completion=, the backend would have send a similar response but with an =error= field instead of the =result= one:
 #+begin_src json
   "error": { "code": -32601, "message": "no such method 'completion'" }
 #+end_src
@@ -198,7 +197,6 @@ through the growth of the communities built around them.
 [[./resources/with-without-lsp.png]]
 
 * What it can offer
-  
 ** - Amazing IDEish features
    
 What's amazing with the LSP is that it has many possible use cases other than code completion.
@@ -274,3 +272,4 @@ Thank you for reading this small article, I hope you learned something new today
  - Emacs integration for LSP: https://emacs-lsp.github.io/lsp-mode/
    
  - How the Language Server Protocol Affects the Future of IDEs: https://www.freecodecamp.org/news/language-server-protocol-and-the-future-of-ide/
+
