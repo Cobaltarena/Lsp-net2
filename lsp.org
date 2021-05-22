@@ -9,12 +9,17 @@
 \newpage
 #+end_export
 * Introduction
-Text editors are often described as lackluster compared to =Integrated development environments= (long for *IDE*)
+Text editors are often described as lackluster compared to =Integrated Development Environments= (long for *IDE*)
 and their builtin features that can considerably enhanced the productivity when writing code.
-A good example to illustrate this point is the auto-completion which is enabled by default on most IDEs out there.
-Even if some people do not consider it as mandatory, it can be for some people an important criteria for the tools they may want to choose to write code.
+As an Emacs user, I found myself pretty jealous of some features of the workflows that my friends or my collegues may use.
+A good example to illustrate this point is the auto-completion which is enabled by default on most IDEs out there and is sometimes very troublesome to have it work
+inside Emacs (vanilla or not).
+Even if some people do not consider it as mandatory and do not value it as much as I can do, it can be an important criteria for the tools one
+may want to choose to write code.
 However few years ago, Microsoft managed to find a way that can help implementing such feature in your favorite text editor and help it ascend to the level of an IDE.
-Its name is =Language Server Protocol=, also known as *LSP*.
+Its name is =Language Server Protocol=, also known as *LSP*. I found the existence of this tool by inadvertence while I was ricing a bit my Emacs config, and it helped me
+getting rid off many more issues I would have expected at first.
+.
 
 This article aims to give some background knowledge about LSP, what it consists of, its main uses and finally its current place.
 
@@ -23,9 +28,9 @@ This article aims to give some background knowledge about LSP, what it consists 
 
 In 2015, Microsoft announced the development of *Visual Studio Code*, their homemade open sourced text editor oriented on the programming side.
 However, the competition was already important on this market, with the presence of the almighties IDEs and fossils still widely used such as Emacs, Vim or Nano.
-Nonetheless, the team leading the project aimed for high objectives and planned the whole product to scale well to make sure it will get an important share
+Nonetheless, the team leading the project aimed for high objectives and planned the whole product to scale well and make sure it will get an important share
 of the programmers on the long run.
-As such, they encountered multiple problems when concepting builtin features such code completion.
+As a result, they encountered multiple problems while implementing builtin features of the vanilla VS Code you can use such code completion.
 ** The M * N problem
 
 There was a very annoying problem for companies promoting new languages and communities built around them.
@@ -43,7 +48,7 @@ As you can imagine, it can already be very costly and very hard to develop even 
 However with the introduction of the LSP, the editor does not even need to care about the language being used since all the data is seamlessly treated
 in a different place. In fact, the editor does not think anymore, it only edits and sends some contexts to some servers.
 With the LSP, the infamous M * N problem is solved and only N tools are needed, one for each language.
-Of course, this solution only works if the given editor can offer a client to interact with a server implementing the protocol.
+Of course, this solution only works if the given editor can offer a client that can interact with a server implementing the protocol.
 
 ** A story that started with a compiler and ended with a communication protocol
 
@@ -60,8 +65,8 @@ to reimplement the complicated details every time.
 
 The idea proved itself simple and successful among the communities of the .NET environment. Integrations for some well-known editors such as
 Emacs, Vim, VS Code or Sublime Text can be found on their respective package distributions.
-However, the generic integration was still missing. The Omnisharp project was only a proof that such solution was possible.
-There was a need to standardized the protocol being used as well as the integration of the server inside the editor, which Microsoft did with the LSP.
+However, the generic integration was still missing and the Omnisharp project was only a proof that such solution was possible.
+There was a need to standardized the protocol being used as well as the integration of the server inside the editor, which Microsoft did with their version of the LSP.
 
 * The protocol in itself
 ** Overview
@@ -72,11 +77,11 @@ Consider you have two actors in the process: a client, which can be a programmer
 a context is given to him. If this condition is satisfied, then only the communication between the two is missing, and that is where Microsoft's LSP solution comes
 into action.
 
-Here, the server designates either a local server exchanging =HTTP= messages using =TCP/IP= or a process that communicates though its =standard input and output=.
+Here, the server designates either a local server exchanging =HTTP= messages using =TCP/IP= or a process that communicates through its =standard input and output=.
 Using a custom version of the [[https://www.jsonrpc.org/specification][JSON-RPC]] protocol to send the data, the information is easily exchanged and the process is fast even compared
 to the builtin implementation that can be found in some IDEs.
 
-#+CAPTION: Explanation on what happens during the exchange between the client and the server (from the official documentation of microsoft)
+#+CAPTION: Explanation on what happens during the exchange between the client and the server (from the official documentation of Microsoft)
 #+NAME: Client/Server-JSON-RPC
 #+ATTR_HTML: :style margin-left: auto; margin-right: auto;
 #+ATTR_HTML: :title Explanation on what happens during the exchange between the client and the server (from the official documentation of microsoft)
@@ -85,11 +90,11 @@ to the builtin implementation that can be found in some IDEs.
 
 As illustrated in =Figure 2=, the client sends lots of different notifications about various changes by contacting what could be compared to the endpoints
 of a REST API. Even if it's a huge shortcut to put it this way, the logic is more or less the same.
-For example in =Figure 2=, the client will send a request to contact the method =didChange= each time it will save the file he is editing. That way, the server will be able
-to update the state of the same file he was watching to make sure he will not publish outdated reports after a request from the client.
+For example in =Figure 2=, the client will send a request to contact the method =didChange= each time the user decides to save the current state of the file.
+That way, the server will be able to update the state of the same file he was watching to make sure he will not publish outdated reports after a request from the client.
 
-For more precisions on the available endpoints, Microsoft offers in [[https://microsoft.github.io/language-server-protocol/specification][its specifications of the protocol]] a list of the classic ones that
-should be present for any implementation of a server supporting the LSP.
+For more precisions about the available endpoints, Microsoft offers in [[https://microsoft.github.io/language-server-protocol/specification][its specifications of the protocol]] a list of the classic ones that
+should be present in any implementation of a server supporting the LSP.
 
 ** Structure of the messages exchanged during the process
 
@@ -173,14 +178,13 @@ to ='Method not found'= as defined by JSON-RPC. Also, Microsoft decided to use n
 
 As illustrated with the previous example, what is exchanged between the client and the server is fairly simple to understand and easy to deal with.
 Integrating a server supporting LSP seems way more easier than developping several times the same extension for each language.
-Moreover, there's no need to stick anymore to PyChar for developping python and Intellij to write java code. Both can be done with LSP in your favorite text editor if
+Moreover, there's no need to stick anymore to PyCharm for developping Python and Intellij to write Java code. Both can be done with LSP in your favorite text editor if
 it has an integration with LSP.
 
 There are still some downsides with this solution.
 The main one is that there will always be the same number of servers running in background as they are languages using LSP.
 In a same way, a server is bound to a tool which means that if a programmer is using both Emacs and VS Code to write some C++ code, then this person will need to
 run two LSP servers for C++ *at the same time*.
-This last con also means that it is not possible for now to use the LSP for tools integrated in the cloud from a text editor.
 In addition, some editors do not support multiple servers for the same language. This can be troublesome since a custom implementation would not be able to be used at the same
 time at the major one.
 Finally, the performances aren't always that good since the server is an external factor and do not depend on the editor. Using an IDE is still relevant on this aspect
@@ -220,19 +224,19 @@ can still sometimes be implemented in the language servers even if it is less li
 
 ** - The possibility to write your own language server
    
-Since the LSP is very easy to work with, writing your own language server with customized validations is also.
-There are many APIs available to getting started with the language of your choice, may it be Python, C#, Java, Lisp or many others.
-However, most of the articles I found to write this article were using Typescript because this is both the language used to develop
-VS Code extensions, and the one used in the tutorial proposed by Microsoft.
-If you are interested in trying to write one, I would recommand these readings:
+Since the LSP is very easy to work with, writing your own language server with customized validations is pretty accessible.
+There are many APIs available to getting started with the language of your choice, may it be Python, C#, Java, Lisp and many others.
+However, most of the articles I found to write this article were using Typescript, probably because this is both the language used to write
+VS Code extensions and the one used in the tutorial proposed by Microsoft to get started with the LSP.
+If you are interested in trying to write one, I would recommend these readings:
 
 - [[https://code.visualstudio.com/api/language-extensions/language-server-extension-guide][VS Code official language server extension guide]]: a simple tutorial to write a language server built on a VS Code extension in Typescript.
   
-- [[https://blog.logrocket.com/how-to-use-the-language-server-protocol-to-extending-a-client-764da0e7863c/][Extending a client with the language server protocol]] by Florian Rappl: a detailed explanation on the calls made on the Typescript API. It is followed with a detailed
+- [[https://blog.logrocket.com/how-to-use-the-language-server-protocol-to-extending-a-client-764da0e7863c/][Extending a client with the language server protocol]] by Florian Rappl: a detailed explanation about the calls made on the Typescript API. It is followed with a detailed
   demo on how to implement some simple functionalities of a language server in Typescript.
   
-- [[https://www.toptal.com/javascript/language-server-protocol-tutorial][Language Server Protocol tutorial: From VS Code to Vim]] by Jeremy Greer: an article about the implementation of a language server that blacklist some words,
-  and how its author made it works for several editors without having to modify the source code of the server.
+- [[https://www.toptal.com/javascript/language-server-protocol-tutorial][Language Server Protocol tutorial: From VS Code to Vim]] by Jeremy Greer: an article about the implementation of a language server that blacklist some words
+  and how its author made it work for several editors without having to modify the source code of the server.
   
 - [[https://github.com/eclipse/lsp4j][Java implementation of a language server]] maintained by Eclipse: a github repository that proposes an implementation of an LSP API in Java.
   
@@ -252,10 +256,12 @@ end found some good use of the LSP. The main reason is because it becomes easier
 if the devs were to stick only on the builtin functionalities of the IDEs.
 
 * Conclusion
-  
-The Language Server Protocol is one of these tools that fixes very annoying issues in a very simple way.
-It's a blessing considering all the features it can bring to many different tools, may it be a text editor or an IDE.
+
+The *Language Server Protocol* is one of these tools that fixes very annoying issues in a very simple way.
+It's a blessing considering all the features it can bring to many different tools, may it be a *text editor* or an **IDE*.
 However, it is still far from being perfect and there are many possible upgrades that are very anticipated by the community it has build over the past few years.
+Your text editor won't be as fast as most IDEs would be even with the use of the LSP but it will definetily help it ascend to a level that is closer to them with
+the new oppurtunities it offers.
 
 Thank you for reading this small article, I hope you learned something new today through it!
 
